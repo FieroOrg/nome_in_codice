@@ -30,4 +30,19 @@ async def on_ready():
     print("len guild members:", len(guild.members))
     print(f'Guild Members:\n - {members}')
 
+
+@client.event
+async def on_member_join(member):
+    await member.create_dm()
+    await member.dm_channel.send(
+        f'Hi {member.name}, welcome to my Discord server!'
+    )
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    await message.channel.send("ciao")
+
 client.run(TOKEN)
