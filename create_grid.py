@@ -1,6 +1,14 @@
 from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 
 img = Image.open('images/white_card.png', 'r')
+draw = ImageDraw.Draw(img)
+
+font = ImageFont.truetype("arial.ttf", 50)
+text = "carta1"
+W, H = 120, 142  # first card position
+draw.text((W,H), text, fill="black", font=font)
 
 img_w, img_h = img.size
 # white background
