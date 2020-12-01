@@ -9,3 +9,6 @@ mydb = mysql.connector.connect(
 )
 
 print(mydb)
+
+# output:
+# <mysql.connector.connection_cext.CMySQLConnection object at 0x7f14ee46d160>
