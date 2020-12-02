@@ -4,14 +4,18 @@ from PIL import ImageDraw
 
 img = Image.open('images/white_card.png', 'r')
 draw = ImageDraw.Draw(img)
+img_w, img_h = img.size
 
-# white background
-background = Image.new('RGBA', (2000, 1700), (255, 255, 255, 255))  # background dimensione in base alla dimensione e al numero di carte e lo parametrizzi
+cards_number = 5
+space = 30
+bg_width = cards_number * (img_w + space) + space
+bg_height = 1700
+# Image constructor: mode, size (width, height in pixels), color.
+background = Image.new('RGBA', (bg_width, bg_height), (255, 255, 255, 255))
 
 font = ImageFont.truetype("arial.ttf", 50)
 word_list = ["carta1", "carta2", "carta3", "carta4", "carta5"]
 W, H = 120, 142  # first card position
-img_w, img_h = img.size
 bg_w, bg_h = background.size
 
 for word in word_list:
