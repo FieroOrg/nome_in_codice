@@ -64,6 +64,8 @@ class Match():
             self.status = Status.PLAY
             self.grid_table = WordTable()
             self.grid_table.generate_words(tag)
+            self.current_turn = self.team_red
+            self.next_turn = self.team_blue
 
     def stop(self):
         if self.status == Status.NOT_STARTED or self.status == Status.STOPPED:
@@ -112,3 +114,15 @@ class Match():
             return self.team_blue.name
         else:
             raise NotAllowedCommand('Master is already set')
+
+    def show(self, member, word):
+        if self.status == Status.PLAY:
+            if self.current_turn.master.id == member.id:
+                found = self.grid_table.show(word)
+                if not found:
+                    raise NotAllowedCommand('{} is not found')
+                self.current_turn, self.next_turn = self.next_turn, self.current_turn
+            else:
+                raise NotAllowedCommand('Only the {} team\'s master can write the word'.format(self.current_turn.name))
+        else:
+            raise NotAllowedCommand('The match is not started')
