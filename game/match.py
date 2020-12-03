@@ -83,7 +83,7 @@ class Match():
             return 'no match found'
         return s
 
-    def join_as_captain(self, member):
+    def join_as_master(self, member):
         """Joins the member to one team if available
 
            Args:

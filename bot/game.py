@@ -15,19 +15,20 @@ class Game(commands.Cog):
         self.bot = bot
         self.starterHelper = starterHelper
 
-    def join_as_captain(self, guild, channel, member):
+    def join_as_master(self, guild, channel, member):
         if (guild.id,channel.id) in self.starterHelper.matches.keys():
-            return self.starterHelper.matches[(guild.id, channel.id)].join_as_captain(member)
+            return self.starterHelper.matches[(guild.id, channel.id)].join_as_master(member)
         else:
             raise NotAllowedCommand('Match not started')
 
     @commands.command()
-    async def captain(self, ctx, *, member: discord.Member = None):
+    async def master(self, ctx, *, member: discord.Member = None):
         """Set the user as captain of a team"""
         try:
             member = member or ctx.author
-            res = self.join_as_captain(ctx.message.author.guild, ctx.message.channel, member)
+            res = self.join_as_master(ctx.message.author.guild, ctx.message.channel, member)
             await ctx.send('{0.name} joined in {1} team~'.format(member, res))
             await ctx.send(self.starterHelper.print_status())
         except NotAllowedCommand as err:
             await ctx.send(err.message)
+
