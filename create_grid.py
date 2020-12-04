@@ -14,14 +14,27 @@ bg_height = 1700
 background = Image.new('RGBA', (bg_width, bg_height), (255, 255, 255, 255))
 
 font = ImageFont.truetype("arial.ttf", 50)
-word_list = ["carta1", "carta2", "carta3", "carta4", "carta5"]
-W, H = 120, 142  # first card position
-bg_w, bg_h = background.size
+word_list = ["carta1", "carta22222", "carta33", "carta4", "carta5"]
 
 # row
 for word in word_list:
     img = Image.open('images/white_card.png', 'r')  # controlla se è da chiudere
     draw = ImageDraw.Draw(img)
+
+    # calculate where to place the word inside the white space of the card
+    (word_width, baseline), (offset_x, offset_y) = font.font.getsize(word)
+    # print("word_width:", word_width)
+    # print("baseline:", baseline)
+    # print("offset_x:", offset_x)
+    # print("offset_y:", offset_y)
+    # pixel number in which the white space in the card starts and ends
+    start_pixel = 40
+    end_pixel = 332
+    available_space = start_pixel-end_pixel
+    free_space = available_space - word_width
+    # W, H: top left position of the word in the white space of the card
+    W, H = (40+(free_space//2)), 142
+
     draw.text((W,H), word, fill="black", font=font)
     pos = word_list.index(word)
     offset = (pos * img_w +(pos+1)*30, 30)  # controlla cosa sono: pixel?
