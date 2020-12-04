@@ -18,12 +18,24 @@ word_list = ["carta1", "carta2", "carta3", "carta4", "carta5"]
 W, H = 120, 142  # first card position
 bg_w, bg_h = background.size
 
+# row
 for word in word_list:
     img = Image.open('images/white_card.png', 'r')  # controlla se è da chiudere
     draw = ImageDraw.Draw(img)
     draw.text((W,H), word, fill="black", font=font)
     pos = word_list.index(word)
     offset = (pos * img_w +(pos+1)*30, 30)  # controlla cosa sono: pixel?
+    background.paste(img, offset)
+
+word_list = ["carta6", "carta7", "carta8", "carta9", "carta10"]
+
+# second column
+for word in word_list:
+    img = Image.open('images/white_card.png', 'r')  # controlla se è da chiudere
+    draw = ImageDraw.Draw(img)
+    draw.text((W, H), word, fill="black", font=font)
+    pos = word_list.index(word)
+    offset = (30, pos * img_h + (pos + 1) * 30)  # controlla cosa sono: pixel?
     background.paste(img, offset)
 
 background.save('images/grid.png')
