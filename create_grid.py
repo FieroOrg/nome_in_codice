@@ -29,8 +29,8 @@ for word in word_list:
     # print("offset_y:", offset_y)
     # pixel number in which the white space in the card starts and ends
     start_pixel = 40
-    end_pixel = 332
-    available_space = start_pixel-end_pixel
+    end_pixel = 335
+    available_space = end_pixel-start_pixel
     free_space = available_space - word_width
     # W, H: top left position of the word in the white space of the card
     W, H = (40+(free_space//2)), 142
