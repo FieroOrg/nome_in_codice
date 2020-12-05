@@ -50,7 +50,7 @@ class ImageGenerator():
                 elif word.revealed and word.color==colorgame.ColorGame.BLUE:
                     color = "blue"
                 elif word.revealed and word.color==colorgame.ColorGame.WHITE:
-                    color = "yellow"
+                    color = "gold"
                 else:
                     color = "black"
                 draw.text((W, H), word.name, fill=color, font=font)
