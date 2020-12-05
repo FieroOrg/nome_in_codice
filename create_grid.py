@@ -2,6 +2,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
+# remember to use 'with Image.open('test.jpg') as img:' to avoid memory disaster
 img = Image.open('images/white_card.png', 'r')
 draw = ImageDraw.Draw(img)
 img_w, img_h = img.size
@@ -18,7 +19,7 @@ word_list = ["carta1", "carta22222", "carta33", "carta4", "carta5"]
 
 # row
 for word in word_list:
-    img = Image.open('images/white_card.png', 'r')  # controlla se è da chiudere
+    img = Image.open('images/white_card.png', 'r')
     draw = ImageDraw.Draw(img)
 
     # calculate where to place the word inside the white space of the card
@@ -37,18 +38,18 @@ for word in word_list:
 
     draw.text((W,H), word, fill="black", font=font)
     pos = word_list.index(word)
-    offset = (pos * img_w +(pos+1)*30, 30)  # controlla cosa sono: pixel?
+    offset = (pos * img_w +(pos+1)*30, 30)  # pixel coordinates
     background.paste(img, offset)
 
 word_list = ["carta6", "carta7", "carta8", "carta9", "carta10"]
 
 # second column
 for word in word_list:
-    img = Image.open('images/white_card.png', 'r')  # controlla se è da chiudere
+    img = Image.open('images/white_card.png', 'r')
     draw = ImageDraw.Draw(img)
     draw.text((W, H), word, fill="black", font=font)
     pos = word_list.index(word)
-    offset = (30, pos * img_h + (pos + 1) * 30)  # controlla cosa sono: pixel?
+    offset = (30, pos * img_h + (pos + 1) * 30)  # pixel coordinates
     background.paste(img, offset)
 
 background.save('images/grid.png')
