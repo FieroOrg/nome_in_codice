@@ -1,7 +1,9 @@
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
+import random
 from game.word import WordTable
+from game import colorgame
 
 
 class ImageGenerator():
@@ -20,8 +22,6 @@ class ImageGenerator():
         :return: immagine (path??)
         """
         # not colored + hide found one
-        for word in words:
-            print(word.print_status())
         with Image.open('../res/images/white_card.png') as img:
             img_w, img_h = img.size
             bg_width = self.col_num * (img_w + self.space_btw_cards) + self.space_btw_cards
@@ -32,7 +32,6 @@ class ImageGenerator():
             # Image constructor: mode, size (width, height in pixels), color.
             background = Image.new('RGBA', (bg_width, bg_height), (255, 255, 255, 255))
             font = ImageFont.truetype("arial.ttf", 50)
-            index_col = row_num
             for word in words:
                 img = Image.open('../res/images/white_card.png', 'r')
                 draw = ImageDraw.Draw(img)
@@ -46,11 +45,17 @@ class ImageGenerator():
                 free_space = available_space - word_width
                 # W, H: top left position of the word in the white space of the card
                 W, H = (40 + (free_space // 2)), 142
-                draw.text((W, H), word.name, fill="black", font=font)
+                if word.revealed and word.color==colorgame.ColorGame.RED:
+                    color = "red"
+                elif word.revealed and word.color==colorgame.ColorGame.BLUE:
+                    color = "blue"
+                elif word.revealed and word.color==colorgame.ColorGame.WHITE:
+                    color = "yellow"
+                else:
+                    color = "black"
+                draw.text((W, H), word.name, fill=color, font=font)
 
                 pos = words.index(word)
-                print("pos:",pos)
-                print("pos//5:",pos//5)
                 offset = (pos%5 * img_w + (pos%5 + 1) * 30, (pos//5) * img_h + ((pos//5) + 1) * 30)  # pixel coordinates
                 background.paste(img, offset)
             background.save('../res/images/grid.png')
@@ -68,6 +73,12 @@ class ImageGenerator():
 
 words_table = WordTable()
 words_table.generate_words("tag")
+print(words_table.print_status())
+# rivelo 10 parole a caso
+i = 10
+while i > 0:
+    words_table.words[random.randint(0, 24)].reveal()
+    i -= 1
 img_gen = ImageGenerator()
 img_gen.image_spy(words_table.words)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
