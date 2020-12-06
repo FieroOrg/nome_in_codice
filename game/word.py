@@ -89,13 +89,11 @@ class WordTable():
         """Reveal the word
 
             """
-        found = False
         for w in self.words:
-            if w.name == string:
+            if w.name.lower() == string.lower():
                 w.show()
-                found = True
-                break
-        return found
+                return True, w.color
+        return False, None
 
     def get_red_point(self):
         """Count the red card revealed
@@ -118,4 +116,5 @@ class WordTable():
             if num == 0:
                 s += '\n'
                 num = 5
+        s+= 'Word guessed\nRed team: {}\nBlue team:{}\n'.format(self.get_red_point(),self.get_blue_point())
         return s

@@ -14,6 +14,15 @@ class Status(Enum):
     PLAY = 3 #: it is a match started and players can't join in
     STOPPED = 4 #: it is a match stopped
 
+class ActionResult(Enum):
+    '''
+    A class to represent the result of the action show.
+    '''
+
+    GUESS = 1 #: returned when the player guess the word
+    NOT_GUESS = 2 #: returned when the player didn't guess the word
+    FINISH = 3 #: returned when the player chose the assassin, guess the word and win or not guessed and lose
+
 class Match():
     """A class to represent the match. It stores the guild, the channel, the list of members, the status and if the status of
     the match is Status.PLAY also the StartedMatch object.
@@ -26,6 +35,15 @@ class Match():
         self.status = Status.NOT_STARTED
         self.team_red = Team(ColorGame.RED, 'Red')
         self.team_blue = Team(ColorGame.BLUE, 'Blue')
+        self.winner = None
+    def verify_victory_condition(self):
+        if self.grid_table.get_red_point() == self.grid_table.number_red:
+            return self.team_red
+        elif self.grid_table.get_blue_point() == self.grid_table.number_blue:
+            return self.team_blue
+        else:
+            return None
+
 
     def join(self, member):
         if self.status == Status.JOINABLE:
@@ -60,6 +78,8 @@ class Match():
             raise NotAllowedCommand('The match is not started')
         elif self.status == Status.PLAY:
             raise NotAllowedCommand('The match is already started and in progress')
+        elif not self.has_masters():
+            raise NotAllowedCommand('We need two masters for play the game')
         else:
             self.status = Status.PLAY
             self.grid_table = WordTable()
@@ -80,6 +100,7 @@ class Match():
             s += self.members[m].name + '\n'
         s += self.team_red.print_status() + '\n' + self.team_blue.print_status() + '\n'
         if self.status == Status.PLAY:
+            s += 'current turn: {} team\n'.format(self.current_turn.name)
             s += self.grid_table.print_status()
         if s == '':
             return 'no match found'
@@ -105,6 +126,9 @@ class Match():
             else:
                 raise NotAllowedCommand('You have to join at the match')
 
+    def has_masters(self):
+        return self.team_red.master != None and self.team_blue.master != None
+
     def join_team(self, member):
         if self.team_red.master == None:
             self.team_red.set_master(member)
@@ -118,11 +142,33 @@ class Match():
     def show(self, member, word):
         if self.status == Status.PLAY:
             if self.current_turn.master.id == member.id:
-                found = self.grid_table.show(word)
+                found, color = self.grid_table.show(word)
                 if not found:
-                    raise NotAllowedCommand('{} is not found')
-                self.current_turn, self.next_turn = self.next_turn, self.current_turn
+                    raise NotAllowedCommand('{} is not found'.format(word))
+                elif color == ColorGame.ASSASSIN:
+                    self.status = Status.STOPPED
+                    self.winner = self.next_turn
+                    return ActionResult.FINISH
+                elif self.verify_victory_condition() == None:
+                    if color != self.current_turn.color:
+                        self.current_turn, self.next_turn = self.next_turn, self.current_turn
+                        return ActionResult.NOT_GUESS
+                    else:
+                        return ActionResult.GUESS
+                else:
+                    self.winner = self.verify_victory_condition()
+                    self.status = Status.STOPPED
+                    return ActionResult.FINISH
             else:
                 raise NotAllowedCommand('Only the {} team\'s master can write the word'.format(self.current_turn.name))
         else:
             raise NotAllowedCommand('The match is not started')
+
+    def pass_turn(self, member):
+        if self.status == Status.PLAY:
+            if member.id == self.current_turn.master.id:
+                self.current_turn, self.next_turn = self.next_turn, self.current_turn
+            else:
+                raise NotAllowedCommand("Only the master of the {} team can give this command".format(self.current_turn.master.name))
+        else:
+            raise NotAllowedCommand("The match is not started")
