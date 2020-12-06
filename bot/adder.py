@@ -2,6 +2,7 @@ import discord
 from util.exception import NotAllowedCommand
 from game.match import Match, Status
 from discord.ext import commands
+from game.database import Database
 
 class Adder(commands.Cog):
     """The commands for handle the adding of words
@@ -10,6 +11,7 @@ class Adder(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.user_tag = dict()
+        self.db = Database() # it's the right place? 
 
     @commands.command()
     async def addtag(self, ctx, tag, lang, *, member: discord.Member = None):
@@ -19,7 +21,7 @@ class Adder(commands.Cog):
             try:
                 member = member or ctx.author
 
-            #something
+                db.addtag(tag, lang)
                 await ctx.send('{0.name} added {1} tag'.format(member, tag))
                 await ctx.send(self.starterHelper.print_status())
             except NotAllowedCommand as err:
