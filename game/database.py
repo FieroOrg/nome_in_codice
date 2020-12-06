@@ -53,10 +53,9 @@ class Database():
         return result
     
     """
-    This function will insert a tag and a language in the db
+    This function will insert a tag and a language in the db [TO TEST]
     """
 
-    #still to test
     def add_tag(tag, lang): # check if already present in the db before inserting
         self.__connect__()
         sql = "INSERT INTO `tags` (`id`, `tagname`, `lang`, `modifiable`) VALUES (NULL, %s, %s, '1')"
@@ -64,6 +63,18 @@ class Database():
         self.cursor.execute(sql, value)
         self.__commit__()
         self.__disconnect__()
+
+    """
+    This function will return the id of a single tag [TO TEST]
+    """
+
+    def get_tag_id(tag):
+        self.__connect__()
+        sql = "SELECT id FROM `tags` WHERE `tagname` LIKE %s "
+        self.cursor.execute(sql, [tag])
+        result = self.cursor.fetchone() # returns a tuple
+        self.__disconnect__()
+        return result
     
     """
     This function will check if a tag is already present in the db [TO TEST]
@@ -90,29 +101,35 @@ class Database():
         return not result # check is the result is empty
 
     """
-    This function will return the id of a word [WIP]
+    This function will return the id of a single word [TO TEST]
     """
 
-    def get_word(word):
+    def get_word_id(word):
         self.__connect__()
-        sql = "SELECT wordname FROM `words` WHERE id IN (SELECT `id-words` FROM `tags-words` WHERE `id-tags` IN (SELECT id FROM tags WHERE tagname = %s))"
-        self.cursor.execute(sql, [tag])
-        # the db returns a list of tuples, with this magic we will translate it to a list of words
-        result = [(lambda x: x[0])(row)for row in self.cursor.fetchall()]
+        sql = "SELECT id FROM `words` WHERE `wordname` LIKE %s "
+        self.cursor.execute(sql, [word])
+        result = self.cursor.fetchone()
         self.__disconnect__()
         return result
 
     """
-    This function will insert a word or a list of words in the db and will bind it with the tag [WIP]
+    This function will insert a word or a list of words in the db and will bind it with an existing tag [TO TEST]
     """
 
     def add_word(words, tag):
-        self.__connect__()
         for word in words:
-            sql = "INSERT INTO `words` (`id`, `tagname`, `lang`, `modifiable`) VALUES (NULL, %s, %s, '1')"
-            value = [(tag, lang)]
-            self.cursor.execute(sql, value)
+            if self.exists_word(word):
+                word_id = self.get_word_id(word)
+            else:
+                self.__connect__()
+                sql = "INSERT INTO `words` (`id`, `wordname`) VALUES (NULL, %s)"
+                self.cursor.execute(sql, [word])
+                self.__commit__()
+                word_id = self.cursor.lastrowid
+                self.__disconnect__()
+            tag_id = get_tag_id(tag)
+            self.__connect__()
+            sql = "INSERT INTO `tags-words` (`id`, `id-tags`, `id-words`) VALUES (NULL, %s, %s)"
+            self.cursor.execute(sql, [(tag_id, word_id)])
             self.__commit__()
             self.__disconnect__()
-
-
