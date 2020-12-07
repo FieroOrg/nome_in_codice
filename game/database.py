@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from util.exception import NotAllowedCommand
 
 
 class Database():
@@ -53,83 +54,68 @@ class Database():
         return result
     
     """
-    This function will insert a tag and a language in the db [TO TEST]
+    This function will insert a tag and a language in the db
     """
 
-    def add_tag(tag, lang): # check if already present in the db before inserting
-        self.__connect__()
-        sql = "INSERT INTO `tags` (`id`, `tagname`, `lang`, `modifiable`) VALUES (NULL, %s, %s, '1')"
-        value = [(tag, lang)]
-        self.cursor.execute(sql, value)
-        self.__commit__()
-        self.__disconnect__()
+    def add_tag(self, tag, lang):
+        if self.get_tag_id(tag) is None:
+            self.__connect__()
+            sql = "INSERT INTO `tags` (`id`, `tagname`, `lang`, `modifiable`) VALUES (NULL, %s, %s, '1')"
+            value = [tag, lang]
+            self.cursor.execute(sql, value)
+            self.__commit__()
+            self.__disconnect__()
+        else:
+            raise NotAllowedCommand("tag already present")
 
     """
-    This function will return the id of a single tag [TO TEST]
+    This function will return the id of a single tag
     """
 
-    def get_tag_id(tag):
+    def get_tag_id(self, tag):
         self.__connect__()
         sql = "SELECT id FROM `tags` WHERE `tagname` LIKE %s "
         self.cursor.execute(sql, [tag])
         result = self.cursor.fetchone() # returns a tuple
         self.__disconnect__()
-        return result
-    
-    """
-    This function will check if a tag is already present in the db [TO TEST]
-    """
-
-    def exists_tag(tag):
-        self.__connect__()
-        sql = "SELECT * FROM `tags` WHERE `tagname` LIKE %s "
-        self.cursor.execute(sql, [tag])
-        result = self.cursor.fetchone()
-        self.__disconnect__()
-        return not result # check is the result is empty
+        if result is None:
+            return None
+        else:
+            return result[0]
 
     """
-    This function will check if a word is already present in the db [TO TEST]
+    This function will return the id of a single word
     """
 
-    def exists_word(word):
-        self.__connect__()
-        sql = "SELECT * FROM `words` WHERE `wordname` LIKE %s "
-        self.cursor.execute(sql, [word])
-        result = self.cursor.fetchone()
-        self.__disconnect__()
-        return not result # check is the result is empty
-
-    """
-    This function will return the id of a single word [TO TEST]
-    """
-
-    def get_word_id(word):
+    def get_word_id(self, word):
         self.__connect__()
         sql = "SELECT id FROM `words` WHERE `wordname` LIKE %s "
         self.cursor.execute(sql, [word])
         result = self.cursor.fetchone()
         self.__disconnect__()
-        return result
+        if result is None:
+            return None
+        else:
+            return result[0]
 
     """
-    This function will insert a word or a list of words in the db and will bind it with an existing tag [TO TEST]
+    This function will insert a word or a list of words in the db and will bind it with an existing tag
     """
 
-    def add_word(words, tag):
+    def add_words(self, words, tag):
+        tag_id = self.get_tag_id(tag)
         for word in words:
-            if self.exists_word(word):
-                word_id = self.get_word_id(word)
-            else:
+            word_id = self.get_word_id(word)
+            if word_id is None:
                 self.__connect__()
                 sql = "INSERT INTO `words` (`id`, `wordname`) VALUES (NULL, %s)"
                 self.cursor.execute(sql, [word])
                 self.__commit__()
                 word_id = self.cursor.lastrowid
                 self.__disconnect__()
-            tag_id = get_tag_id(tag)
+            # improvement: batch insert in tags-words table
             self.__connect__()
             sql = "INSERT INTO `tags-words` (`id`, `id-tags`, `id-words`) VALUES (NULL, %s, %s)"
-            self.cursor.execute(sql, [(tag_id, word_id)])
+            self.cursor.execute(sql, [tag_id, word_id])
             self.__commit__()
             self.__disconnect__()

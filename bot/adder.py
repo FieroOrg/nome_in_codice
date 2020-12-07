@@ -20,8 +20,7 @@ class Adder(commands.Cog):
         else:
             try:
                 member = member or ctx.author
-
-                db.addtag(tag, lang)
+                self.db.add_tag(tag, lang)
                 await ctx.send('{0.name} added {1} tag'.format(member, tag))
                 await ctx.send(self.starterHelper.print_status())
             except NotAllowedCommand as err:
@@ -35,11 +34,11 @@ class Adder(commands.Cog):
         else:
             try:
                 member = member or ctx.author
-                # if tag exists
-                self.user_tag[member.id] = tag
-
-                #something
-                await ctx.send('write the words. One word/term in each line')
+                if self.db.get_tag_id(tag) is not None:
+                    self.user_tag[member.id] = tag
+                    await ctx.send('write the words. One word/term in each line')
+                else:
+                    raise NotAllowedCommand("the tag does not exists")
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
 
@@ -51,7 +50,7 @@ class Adder(commands.Cog):
         member = member or ctx.author
         if isinstance(ctx.message.channel, discord.DMChannel) and member.id in self.user_tag.keys():
             words = ctx.message.text.strip('\n')
-            # qualcosa nel db tipo add(words, tag)
+            self.db.add_words(words, self.user_tag[member.id])
 
     @commands.command()
     async def stopword(self, ctx, *, member: discord.Member = None):
@@ -61,7 +60,6 @@ class Adder(commands.Cog):
         else:
             try:
                 member = member or ctx.author
-                # if tag exists
                 self.user_tag.pop(member.id, None)
                 await ctx.send('Stop insering words')
             except NotAllowedCommand as err:
