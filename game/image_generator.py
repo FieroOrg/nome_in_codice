@@ -7,8 +7,8 @@ from game import colorgame
 
 
 class ImageGenerator():
-    """Class description
-
+    """
+    A class to create an image from a list of Word objects
     """
 
     def __init__(self):
@@ -19,47 +19,57 @@ class ImageGenerator():
         """
 
         :param words: list of Word
-        :return: immagine (path??)
+        :return: image path
         """
-        # not colored + hide found one
-        with Image.open('../res/images/white_card.png') as img:
+        background = self.create_bg('../res/images/white_card.png', words)
+        font = ImageFont.truetype("arial.ttf", 50)
+        for word in words:
+            img = Image.open('../res/images/white_card.png', 'r')
             img_w, img_h = img.size
+            draw = ImageDraw.Draw(img)
+
+            # calculate where to place the word inside the white space of the card
+            (word_width, baseline), (offset_x, offset_y) = font.font.getsize(word.name)
+            # pixel number in which the white space in the card starts and ends
+            start_pixel = 40
+            end_pixel = 335
+            available_space = end_pixel - start_pixel
+            free_space = available_space - word_width
+            # W, H: top left position of the word in the white space of the card
+            W, H = (40 + (free_space // 2)), 142
+            if word.revealed and word.color==colorgame.ColorGame.RED:
+                color = "red"
+            elif word.revealed and word.color==colorgame.ColorGame.BLUE:
+                color = "blue"
+            elif word.revealed and word.color==colorgame.ColorGame.WHITE:
+                color = "gold"
+            else:
+                color = "black"
+            draw.text((W, H), word.name, fill=color, font=font)
+
+            pos = words.index(word)
+            offset = (pos%5 * img_w + (pos%5 + 1) * 30, (pos//5) * img_h + ((pos//5) + 1) * 30)  # pixel coordinates
+            background.paste(img, offset)
+        background.save('../res/images/grid.png')
+        # return '/path/to/return'
+
+    """
+    This function creates the background of the image
+    """
+    def create_bg(self, image_path, words):
+        with Image.open(image_path) as img:
+            img_w, img_h = img.size
+
             bg_width = self.col_num * (img_w + self.space_btw_cards) + self.space_btw_cards
-            row_num = len(words)//self.col_num
-            if len(words)%self.col_num != 0:
-                row_num =+ 1
-            bg_height = row_num* (img_h + self.space_btw_cards) + self.space_btw_cards
+
+            row_num = len(words) // self.col_num
+            if len(words) % self.col_num != 0:
+                row_num = + 1
+            bg_height = row_num * (img_h + self.space_btw_cards) + self.space_btw_cards
+
             # Image constructor: mode, size (width, height in pixels), color.
             background = Image.new('RGBA', (bg_width, bg_height), (255, 255, 255, 255))
-            font = ImageFont.truetype("arial.ttf", 50)
-            for word in words:
-                img = Image.open('../res/images/white_card.png', 'r')
-                draw = ImageDraw.Draw(img)
-
-                # calculate where to place the word inside the white space of the card
-                (word_width, baseline), (offset_x, offset_y) = font.font.getsize(word.name)
-                # pixel number in which the white space in the card starts and ends
-                start_pixel = 40
-                end_pixel = 335
-                available_space = end_pixel - start_pixel
-                free_space = available_space - word_width
-                # W, H: top left position of the word in the white space of the card
-                W, H = (40 + (free_space // 2)), 142
-                if word.revealed and word.color==colorgame.ColorGame.RED:
-                    color = "red"
-                elif word.revealed and word.color==colorgame.ColorGame.BLUE:
-                    color = "blue"
-                elif word.revealed and word.color==colorgame.ColorGame.WHITE:
-                    color = "gold"
-                else:
-                    color = "black"
-                draw.text((W, H), word.name, fill=color, font=font)
-
-                pos = words.index(word)
-                offset = (pos%5 * img_w + (pos%5 + 1) * 30, (pos//5) * img_h + ((pos//5) + 1) * 30)  # pixel coordinates
-                background.paste(img, offset)
-            background.save('../res/images/grid.png')
-        # return '/path/to/return'
+        return background
 
     def image_master(self, words):
         """
