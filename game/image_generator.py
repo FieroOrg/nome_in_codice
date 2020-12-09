@@ -36,8 +36,10 @@ class ImageGenerator:
         with Image.open(img_path) as img:
             img_w, img_h = img.size
 
+        # compute background width
         bg_width = self.col_num * (img_w + self.space_btw_cards) + self.space_btw_cards
 
+        # compute background height
         row_num = len(words) // self.col_num
         if len(words) % self.col_num != 0:
             row_num = + 1
