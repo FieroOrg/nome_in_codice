@@ -6,7 +6,7 @@ from game.word import WordTable
 from game import colorgame
 
 
-class ImageGenerator():
+class ImageGenerator:
     """
     A class to create an image from a list of Word objects
     """
@@ -19,16 +19,15 @@ class ImageGenerator():
     def image_spy(self, words):
         """
 
-        :param words: list of Word
+        :param words: list of Word objects
         :return: image path
         """
         background = self.create_bg('../res/images/white_card.png', words)
         for word in words:
             pos = words.index(word)
-            self.add_card_to_bg(background, '../res/images/white_card.png', word, pos)
-
+            background = self.add_card_to_bg(background, '../res/images/white_card.png', word, pos)
         background.save('../res/images/grid.png')
-        # return '/path/to/return'
+        return '../res/images/grid.png'
 
     """
     This function creates the background of the image
