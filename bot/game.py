@@ -64,9 +64,9 @@ class Game(commands.Cog):
                 name = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].winner.name
                 await ctx.send(_('end_game', team=name))
             elif res == ActionResult.GUESS:
-                await ctx.send(_('word_guessed'), word=word)
+                await ctx.send(_('word_guessed', word=word))
             else:
-                await ctx.send(_('word_not_guessed'), word=word)
+                await ctx.send(_('word_not_guessed', word=word))
             await self.send_images(ctx)
         except NotAllowedCommand as err:
             await ctx.send(err.message)
@@ -121,7 +121,6 @@ class Game(commands.Cog):
             self.game_helper.start(ctx.message.author.guild, ctx.message.channel)
             member = member or ctx.author
             await ctx.send(_('start_game', user=member.name))
-            await self.send_images(ctx)
         except NotAllowedCommand as err:
             await ctx.send(err.message)
 
@@ -163,6 +162,8 @@ class Game(commands.Cog):
             self.game_helper.play(ctx.message.guild.id, ctx.message.channel.id, tag)
             member = member or ctx.author
             await ctx.send(_('play_game', user=member.name, tag=tag))
+            await self.send_images(ctx)
+            # ....
         except NotAllowedCommand as err:
             await ctx.send(err.message)
 
