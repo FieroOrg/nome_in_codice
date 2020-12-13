@@ -66,7 +66,7 @@ class ImageGenerator:
             draw = ImageDraw.Draw(img)
         # calculate where to place the word inside the white space of the card
         (word_width, baseline), (offset_x, offset_y) = self.font.font.getsize(word.name)
-        # pixel number in which the white space in the card starts and ends
+        # pixel number in which the white space in the card starts and ends (x-coordinates)
         start_pixel = 40
         end_pixel = 335
         available_space = end_pixel - start_pixel
