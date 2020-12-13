@@ -54,6 +54,21 @@ class Database():
         return result
     
     """
+    This function will get all tags and languages in the db
+    """
+
+    def get_tags(self):
+        self.__connect__()
+        sql = "SELECT tagname, lang  FROM `tags`"
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        self.__disconnect__()
+        if result is None:
+            return []
+        else:
+            return result
+
+    """
     This function will insert a tag and a language in the db
     """
 
