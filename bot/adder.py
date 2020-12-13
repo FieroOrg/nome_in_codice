@@ -22,7 +22,6 @@ class Adder(commands.Cog):
                 member = member or ctx.author
                 self.db.add_tag(tag, lang)
                 await ctx.send('{0.name} added {1} tag'.format(member, tag))
-                await ctx.send(self.starterHelper.print_status())
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
 
@@ -48,8 +47,10 @@ class Adder(commands.Cog):
         if ctx.author == self.bot.user:
             return
         member = member or ctx.author
-        if isinstance(ctx.message.channel, discord.DMChannel) and member.id in self.user_tag.keys():
-            words = ctx.message.text.strip('\n')
+        if isinstance(ctx.channel, discord.DMChannel) and member.id in self.user_tag.keys() and ctx.content[0] != '!':
+            words = ctx.content.split('\n')
+            #for each word in words, upperize the first letter
+            words = [(lambda x: x[0].upper() + x[1:])(w) for w in words]
             self.db.add_words(words, self.user_tag[member.id])
 
     @commands.command()
