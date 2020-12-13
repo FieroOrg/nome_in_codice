@@ -11,28 +11,38 @@ class ImageGenerator:
     A class to create an image from a list of Word objects
     """
 
-    def __init__(self):
+    def __init__(self, master):
         self.col_num = 5
         self.space_btw_cards = 30
         self.font = ImageFont.truetype("arial.ttf", 25)
+        self.master = master
 
-    def image_spy(self, words, master):
+    def image_spy(self, words):
         """
 
         :param words: list of Word objects
         :param master: boolean for distinguish spies from masters
         :return: image path
         """
-        background = self.create_bg('../res/images/white_card.png', words)
-        if master:
+        background = self.create_bg('../res/images/cards/white_card.png', words)
+        if self.master:
             for word in words:
                 pos = words.index(word)
-                background = self.add_card_to_bg(background, '../res/images/red_card.png', word, pos)
-                # subsitute path with correct word property
+                # choose the color of the card
+                if word.color == colorgame.ColorGame.RED:
+                    path_card = '../res/images/cards/red_card.png'
+                elif word.color == colorgame.ColorGame.BLUE:
+                    path_card = '../res/images/cards/blue_card.png'
+                elif word.color == colorgame.ColorGame.WHITE:
+                    path_card = '../res/images/cards/white_card.png'
+                else:
+                    path_card = '../res/images/cards/black_card.png'
+                background = self.add_card_to_bg(background, path_card, word, pos)
         else:
             for word in words:
                 pos = words.index(word)
-                background = self.add_card_to_bg(background, '../res/images/white_card.png', word, pos)
+                background = self.add_card_to_bg(background, '../res/images/cards/white_card.png', word, pos)
+                # substitute path with correct word property
         background.save('../res/images/grid.png')
         return '../res/images/grid.png'
 
@@ -91,17 +101,12 @@ class ImageGenerator:
         word_x_pos = x_left + (free_space_x // 2)
         word_y_pos = y_up + (free_space_y // 2)
 
-        # choose the color of the card
-        if word.revealed and word.color == colorgame.ColorGame.RED:
-            color = "red"
-        elif word.revealed and word.color == colorgame.ColorGame.BLUE:
-            color = "blue"
-        elif word.revealed and word.color == colorgame.ColorGame.WHITE:
-            color = "gold"
+        # choose the color of the text
+        if self.master and word.color == colorgame.ColorGame.ASSASSIN:
+            font_color = "white"
         else:
-            color = "black"
-
-        draw.text((word_x_pos, word_y_pos), word.name, fill=color, font=self.font)
+            font_color = "black"
+        draw.text((word_x_pos, word_y_pos), word.name, fill=font_color, font=self.font)
 
         # top-left corner coordinates of the card in the background
         card_x = (pos % self.col_num) * img_w + (pos % self.col_num + 1) * self.space_btw_cards
@@ -119,7 +124,7 @@ i = 10
 while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
-img_gen = ImageGenerator()
-img_gen.image_spy(words_table.words, False)
+img_gen = ImageGenerator(True)
+img_gen.image_spy(words_table.words)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
