@@ -49,7 +49,7 @@ class Game(commands.Cog):
         try:
             member = member or ctx.author
             self.join_as_master(ctx.message.author.guild, ctx.message.channel, member)
-            await ctx.send(_('user_joined', user=member.name))
+            await ctx.send(_('join_game_as_master', user=member.name))
             await ctx.send(self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].print_members())
         except NotAllowedCommand as err:
             await ctx.send(err.message)
