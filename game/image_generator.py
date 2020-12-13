@@ -20,6 +20,7 @@ class ImageGenerator:
         """
 
         :param words: list of Word objects
+        :param master: boolean for distinguish spies from masters
         :return: image path
         """
         background = self.create_bg('../res/images/white_card.png', words)
