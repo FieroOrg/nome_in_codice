@@ -67,12 +67,14 @@ class Match:
         else:
             raise NotAllowedCommand(_('error_already_joined', team=self.get_team_member(member).name))
 
+
     def leave(self, member):
         if self.status != Status.JOINABLE:
             raise NotAllowedCommand(_('error_joinable'))
         team = self.get_team_member(member)
         if team is not None:
             team.leave(member)
+
         else:
             raise NotAllowedCommand(_('error_not_join'))
 
@@ -110,7 +112,6 @@ class Match:
 
     def print_status(self):
         s = "Guild id: {}, channel id: {}, status: {} \n".format(self.guild.name, self.channel.name, self.status)
-
         s += self.team_red.print_status() + '\n' + self.team_blue.print_status() + '\n'
         if self.status == Status.PLAY:
             s += 'current turn: {} team\n'.format(self.current_turn.name)

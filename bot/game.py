@@ -64,9 +64,11 @@ class Game(commands.Cog):
                 name = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].winner.name
                 await ctx.send(_('end_game', team=name))
             elif res == ActionResult.GUESS:
+
                 await ctx.send(_('word_guessed', word=word))
             else:
                 await ctx.send(_('word_not_guessed', word=word))
+
             await self.send_images(ctx)
         except NotAllowedCommand as err:
             await ctx.send(err.message)
