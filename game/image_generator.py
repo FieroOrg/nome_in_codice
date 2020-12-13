@@ -14,7 +14,7 @@ class ImageGenerator:
     def __init__(self):
         self.col_num = 5
         self.space_btw_cards = 30
-        self.font = ImageFont.truetype("arial.ttf", 50)
+        self.font = ImageFont.truetype("arial.ttf", 25)
 
     def image_spy(self, words):
         """
@@ -65,14 +65,24 @@ class ImageGenerator:
             img_w, img_h = img.size
             draw = ImageDraw.Draw(img)
         # calculate where to place the word inside the white space of the card
-        (word_width, baseline), (offset_x, offset_y) = self.font.font.getsize(word.name)
-        # pixel number in which the white space in the card starts and ends (x-coordinates)
-        start_pixel = 40
-        end_pixel = 335
-        available_space = end_pixel - start_pixel
-        free_space = available_space - word_width
-        # x, y: top-left position of the word in the card white space according to the word's length
-        x, y = (40 + (free_space // 2)), 142
+        (word_width, word_height), (offset_x, offset_y) = self.font.font.getsize(word.name)
+        # coordinates of the white space
+        x_left = 18
+        x_right = 160
+        y_up = 65
+        y_down = 98
+        # dimension of the white space
+        white_space_width = x_right - x_left
+        white_space_height = y_down - y_up
+        # white space that remains free
+        free_space_x = white_space_width - word_width
+        free_space_y = white_space_height - 23
+        # 23 and not word_height because sometimes it is 18 and sometimes it is 23
+        # and then the words are on different planes and they suck
+        # (maybe if there is a letter going down the height increases).
+        # coordinates of the beginning of the word
+        word_x_pos = x_left + (free_space_x // 2)
+        word_y_pos = y_up + (free_space_y // 2)
 
         # choose the color of the card
         if word.revealed and word.color == colorgame.ColorGame.RED:
@@ -84,9 +94,9 @@ class ImageGenerator:
         else:
             color = "black"
 
-        draw.text((x, y), word.name, fill=color, font=self.font)
+        draw.text((word_x_pos, word_y_pos), word.name, fill=color, font=self.font)
 
-        # pixel coordinates in the background of the card top-left corner
+        # top-left corner coordinates of the card in the background
         card_x = (pos % self.col_num) * img_w + (pos % self.col_num + 1) * self.space_btw_cards
         card_y = (pos // self.col_num) * img_h + ((pos // self.col_num) + 1) * self.space_btw_cards
         offset = (card_x, card_y)
