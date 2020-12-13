@@ -25,9 +25,11 @@ class ImageGenerator:
         :return: image path
         """
         background = self.create_bg('../res/images/cards/white_card.png', words)
-        if self.master:
-            for word in words:
-                pos = words.index(word)
+        for word in words:
+            pos = words.index(word)
+            if word.revealed:
+                background = self.add_revealed_card(background, word, pos)
+            elif self.master:
                 # choose the color of the card
                 if word.color == colorgame.ColorGame.RED:
                     path_card = '../res/images/cards/red_card.png'
@@ -37,12 +39,10 @@ class ImageGenerator:
                     path_card = '../res/images/cards/white_card.png'
                 else:
                     path_card = '../res/images/cards/black_card.png'
-                background = self.add_card_to_bg(background, path_card, word, pos)
-        else:
-            for word in words:
+                background = self.add_card(background, path_card, word, pos)
+            else:
                 pos = words.index(word)
-                background = self.add_card_to_bg(background, '../res/images/cards/white_card.png', word, pos)
-                # substitute path with correct word property
+                background = self.add_card(background, '../res/images/cards/white_card.png', word, pos)
         background.save('../res/images/grid.png')
         return '../res/images/grid.png'
 
@@ -69,7 +69,7 @@ class ImageGenerator:
     """
     This function add a card to the background
     """
-    def add_card_to_bg(self, background, img_path, word, pos):
+    def add_card(self, background, img_path, word, pos):
         """
 
         :param background: the background on which to add the card
@@ -115,6 +115,18 @@ class ImageGenerator:
         background.paste(img, offset)
         return background
 
+    def add_revealed_card(self, background, word, pos):
+        with Image.open('../res/images/cards/black_card.png') as img:
+            # substitute path with correct word property
+            img_w, img_h = img.size
+            draw = ImageDraw.Draw(img)
+            # top-left corner coordinates of the card in the background
+            card_x = (pos % self.col_num) * img_w + (pos % self.col_num + 1) * self.space_btw_cards
+            card_y = (pos // self.col_num) * img_h + ((pos // self.col_num) + 1) * self.space_btw_cards
+            offset = (card_x, card_y)
+            background.paste(img, offset)
+        return background
+
 
 words_table = WordTable()
 words_table.generate_words("tag")
@@ -124,7 +136,7 @@ i = 10
 while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
-img_gen = ImageGenerator(True)
+img_gen = ImageGenerator(False)
 img_gen.image_spy(words_table.words)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
