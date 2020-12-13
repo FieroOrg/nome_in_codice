@@ -18,12 +18,12 @@ class Adder(commands.Cog):
     @commands.command()
     async def addtag(self, ctx, tag, lang, *, member: discord.Member = None):
         if not isinstance(ctx.message.channel, discord.DMChannel):
-            await ctx.send('You should send !addtag [tag] [lang] in a private message')
+            await ctx.send(_('error_addtag_private'))
         else:
             try:
                 member = member or ctx.author
                 self.db.add_tag(tag, lang)
-                await ctx.send('{0.name} added {1} tag'.format(member, tag))
+                await ctx.send(_('tag_added', tag = tag))
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
 
@@ -31,15 +31,15 @@ class Adder(commands.Cog):
     async def addword(self, ctx, tag, *, member: discord.Member = None):
 
         if not isinstance(ctx.message.channel, discord.DMChannel):
-            await ctx.send('You should send !addword [tag] in a private message')
+            await ctx.send(_('error_addword_private'))
         else:
             try:
                 member = member or ctx.author
                 if self.db.get_tag_id(tag) is not None:
                     self.user_tag[member.id] = tag
-                    await ctx.send('write the words. One word/term in each line')
+                    await ctx.send(_('tag_adding', tag = tag))
                 else:
-                    raise NotAllowedCommand("the tag does not exists")
+                    raise NotAllowedCommand(_('error_tag_not_exists', tag = tag))
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
 
@@ -54,17 +54,18 @@ class Adder(commands.Cog):
             #for each word in words, upperize the first letter
             words = [(lambda x: x[0].upper() + x[1:])(w) for w in words]
             self.db.add_words(words, self.user_tag[member.id])
+            await ctx.send(_('words_added'))
 
     @commands.command()
     async def stopword(self, ctx, *, member: discord.Member = None):
 
         if not isinstance(ctx.message.channel, discord.DMChannel):
-            await ctx.send('You should send !addword [tag] in a private message')
+            await ctx.send(_('error_stopword_private'))
         else:
             try:
                 member = member or ctx.author
                 self.user_tag.pop(member.id, None)
-                await ctx.send('Stop insering words')
+                await ctx.send(_('stop_word'))
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
 
