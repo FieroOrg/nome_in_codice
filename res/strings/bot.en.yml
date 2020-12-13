@@ -9,6 +9,7 @@ en:
   error_master_other_team: 'Master in your team already set'
   error_need_two_master: 'We need two masters for play the game'
   error_already_joined: 'You are already joined in %{team}'
+  error_word_show: 'The word is already shown'
   user_joined: '%{user} joined in the match'
   end_game: 'Game over! %{team} won the match'
   word_guessed: '%{word} is correct. You can guess another word with !show or !pass'
