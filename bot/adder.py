@@ -3,6 +3,8 @@ from util.exception import NotAllowedCommand
 from game.match import Match, Status
 from discord.ext import commands
 from game.database import Database
+from util.strings import get_string_bot as _
+
 
 class Adder(commands.Cog):
     """The commands for handle the adding of words
@@ -65,3 +67,18 @@ class Adder(commands.Cog):
                 await ctx.send('Stop insering words')
             except NotAllowedCommand as err:
                 await ctx.send(err.message)
+
+    @commands.command()
+    async def listtags(self, ctx, *, member: discord.Member = None):
+        try:
+            member = member or ctx.author
+            tags = self.db.get_tags()
+            if len(tags) == 0:
+                s = _('tags_empty')
+            else:
+                s = _('tags_available') + '\n'
+                for (tag, lang) in tags:
+                    s+='{} ({})\n'.format(tag,lang)
+            await ctx.send(s)
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
