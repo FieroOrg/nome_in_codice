@@ -163,7 +163,6 @@ class Game(commands.Cog):
             member = member or ctx.author
             await ctx.send(_('play_game', user=member.name, tag=tag))
             await self.send_images(ctx)
-            # ....
         except NotAllowedCommand as err:
             await ctx.send(err.message)
 
