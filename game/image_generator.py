@@ -16,16 +16,22 @@ class ImageGenerator:
         self.space_btw_cards = 30
         self.font = ImageFont.truetype("arial.ttf", 25)
 
-    def image_spy(self, words):
+    def image_spy(self, words, master):
         """
 
         :param words: list of Word objects
         :return: image path
         """
         background = self.create_bg('../res/images/white_card.png', words)
-        for word in words:
-            pos = words.index(word)
-            background = self.add_card_to_bg(background, '../res/images/white_card.png', word, pos)
+        if master:
+            for word in words:
+                pos = words.index(word)
+                background = self.add_card_to_bg(background, '../res/images/red_card.png', word, pos)
+                # subsitute path with correct word property
+        else:
+            for word in words:
+                pos = words.index(word)
+                background = self.add_card_to_bg(background, '../res/images/white_card.png', word, pos)
         background.save('../res/images/grid.png')
         return '../res/images/grid.png'
 
@@ -103,15 +109,6 @@ class ImageGenerator:
         background.paste(img, offset)
         return background
 
-    def image_master(self, words):
-        """
-
-        :param words: list of Word
-        :return: immagine (path??)
-        """
-        # colored + hide found one
-        return '/path/to/return'
-
 
 words_table = WordTable()
 words_table.generate_words("tag")
@@ -122,6 +119,6 @@ while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
 img_gen = ImageGenerator()
-img_gen.image_spy(words_table.words)
+img_gen.image_spy(words_table.words, False)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
