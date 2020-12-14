@@ -96,7 +96,9 @@ class WordTable:
         self.assassin_revealed_path = random.sample([f for f in
                                                      glob.glob(self.images_res_path + "/black_revealed/*.png")],
                                                     self.number_assassin)
-        self.revealed_counter = {'red': 0, 'blue': 0, 'assassin': 0}
+        self.white_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/white_revealed/*.png")],
+                                               self.number_red)
+        self.revealed_counter = {'red': 0, 'blue': 0, 'white': 0, 'assassin': 0}
 
         self.create_grid()
 
@@ -117,18 +119,18 @@ class WordTable:
 
     def get_path(self, color):
 
-        if color == ColorGame.WHITE:
-            return 'res/images/cards/white_card.png'
-
         if color == ColorGame.RED:
             path = self.red_revealed_path
             color_str = 'red'
         elif color == ColorGame.BLUE:
             path = self.blue_revealed_path
             color_str = 'blue'
-        else:  # color == ColorGame.ASSASSIN
+        elif color == ColorGame.ASSASSIN:
             path = self.assassin_revealed_path
             color_str = 'assassin'
+        else:
+            path = self.white_revealed_path
+            color_str = 'white'
 
         self.revealed_counter[color_str] += 1
         if self.revealed_counter[color_str] > len(path):
