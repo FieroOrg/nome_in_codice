@@ -1,17 +1,19 @@
 from game.colorgame import ColorGame
 from game.database import Database
 import random
+import glob
 from util.exception import NotAllowedCommand
 from util.strings import get_string_bot as _
 
-class Word():
+
+class Word:
     """A class to represent a word in the game
 
     """
 
-    def __init__(self, name, color):
-        self.name = name #: name
-        self.color = color #: color of the word
+    def __init__(self, name, color, image_path):
+        self.name = name  #: name
+        self.color = color  #: color of the word
         self.revealed = False
 
     """private method to reveal the word
@@ -24,7 +26,6 @@ class Word():
             self.revealed = True
 
     def print_status(self):
-        color = ''
         if self.color == ColorGame.RED:
             color = ':red_circle:'
         elif self.color == ColorGame.BLUE:
@@ -39,11 +40,10 @@ class Word():
         else:
             bold = ''
 
-        return "{}{}{}{}".format(bold,self.name,color,bold)
+        return "{}{}{}{}".format(bold, self.name, color, bold)
 
 
-
-class WordTable():
+class WordTable:
     """A class that represent the grid of the game
 
         """
@@ -55,6 +55,13 @@ class WordTable():
         self.number_blue = 8
         self.number_assassin = 1
         self.number_white = self.size - (self.number_red + self.number_blue + self.number_assassin)
+        self.images_res_path = 'res/images/'
+
+        self.words_str = None
+        self.red_words = None
+        self.blue_words = None
+        self.assassin_words = None
+        self.white_words = None
 
 
     def generate_words(self, tag):
@@ -72,8 +79,21 @@ class WordTable():
         self.blue_words = random.sample([x for x in self.words_str if x not in red_set], self.number_blue)
 
         blue_set = set(self.blue_words)
-        self.assassin_words = random.sample([x for x in self.words_str if x not in red_set and x not in blue_set], self.number_assassin)
-        self.white_words = [x for x in self.words_str if x not in red_set and x not in blue_set and x not in self.assassin_words]
+        self.assassin_words = random.sample([x for x in self.words_str if x not in red_set and x not in blue_set],
+                                            self.number_assassin)
+        self.white_words = [x for x in self.words_str if x not in red_set and x not in blue_set and
+                            x not in self.assassin_words]
+
+
+        self.red_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/red_revealed/*.png")],
+                                               self.number_red)
+        self.blue_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/blue_revealed/*.png")],
+                                                self.number_blue)
+        self.assassin_revealed_path = random.sample([f for f in
+                                                     glob.glob(self.images_res_path + "/black_revealed/*.png")],
+                                                    self.number_assassin)
+        self.revealed_counter = {'red': 0, 'blue': 0, 'assassin': 0}
+
         self.create_grid()
 
     def create_grid(self):
