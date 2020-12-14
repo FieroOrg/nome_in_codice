@@ -1,9 +1,7 @@
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
-import random
 import os
-from game.word import WordTable
 from game import colorgame
 
 
