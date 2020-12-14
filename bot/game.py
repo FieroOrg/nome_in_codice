@@ -38,8 +38,9 @@ class Game(commands.Cog):
 
     async def send_images(self, ctx):
         words = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].grid_table.words
+        next_team = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].current_turn.name
         spies_image = [discord.File(ImageGenerator().generate(words, False))]
-        await ctx.send(files=spies_image)
+        await ctx.send(_('turn', team=next_team),files=spies_image)
         master_red = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_red.master
         master_blue = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_blue.master
         if master_red is not None:
