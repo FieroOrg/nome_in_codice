@@ -18,11 +18,10 @@ class ImageGenerator:
         self.font = ImageFont.truetype("arial.ttf", 25)
         self.master = None
 
-    def image_spy(self, words, master):
+    def generate(self, words, master):
         """
 
         :param words: list of Word objects
-        :param master: boolean for distinguish spies from masters
         :return: image path
         """
         self.master = master
@@ -134,6 +133,6 @@ while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
 img_gen = ImageGenerator()
-img_gen.image_spy(words_table.words, True)
+img_gen.generate(words_table.words, False)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
