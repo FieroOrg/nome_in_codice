@@ -2,8 +2,11 @@ from game.colorgame import ColorGame
 from game.database import Database
 import random
 import glob
+<<<<<<< HEAD
 from util.exception import NotAllowedCommand
 from util.strings import get_string_bot as _
+=======
+>>>>>>> 915ae5e... add generation of images for the revealed cards
 
 
 class Word:
@@ -15,6 +18,7 @@ class Word:
         self.name = name  #: name
         self.color = color  #: color of the word
         self.revealed = False
+        self.image_path = image_path
 
     """private method to reveal the word
 
@@ -62,7 +66,10 @@ class WordTable:
         self.blue_words = None
         self.assassin_words = None
         self.white_words = None
-
+        self.red_revealed_path = None
+        self.blue_revealed_path = None
+        self.assassin_revealed_path = None
+        self.revealed_counter = None
 
     def generate_words(self, tag):
         """Generate the word from the database
@@ -103,13 +110,33 @@ class WordTable:
         self.words = []
         for w in self.words_str:
             if w in self.red_words:
-                self.words.append(Word(w,ColorGame.RED))
+                self.words.append(Word(w, ColorGame.RED, self.get_path(ColorGame.RED)))
             elif w in self.blue_words:
-                self.words.append(Word(w,ColorGame.BLUE))
+                self.words.append(Word(w, ColorGame.BLUE, self.get_path(ColorGame.BLUE)))
             elif w in self.white_words:
-                self.words.append(Word(w,ColorGame.WHITE))
+                self.words.append(Word(w, ColorGame.WHITE, self.get_path(ColorGame.WHITE)))
             else:
-                self.words.append(Word(w,ColorGame.ASSASSIN))
+                self.words.append(Word(w, ColorGame.ASSASSIN, self.get_path(ColorGame.ASSASSIN)))
+
+    def get_path(self, color):
+
+        if color == ColorGame.WHITE:
+            return 'res/images/cards/white_card.png'
+
+        if color == ColorGame.RED:
+            path = self.red_revealed_path
+            color_str = 'red'
+        elif color == ColorGame.BLUE:
+            path = self.blue_revealed_path
+            color_str = 'blue'
+        else:  # color == ColorGame.ASSASSIN
+            path = self.assassin_revealed_path
+            color_str = 'assassin'
+
+        self.revealed_counter[color_str] += 1
+        if self.revealed_counter[color_str] > len(path):
+            self.revealed_counter[color_str] = 1
+        return path[self.revealed_counter[color_str] - 1]
 
     def show(self, string):
         """Reveal the word
