@@ -2,6 +2,7 @@ from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
 import random
+import os
 from game.word import WordTable
 from game import colorgame
 
@@ -46,7 +47,7 @@ class ImageGenerator:
                 written_card_path = self.write_on_card(card_path, word)
                 background = self.add_card(background, written_card_path, pos)
         background.save('../res/images/grid.png')
-        # empty temp dir
+        os.remove('../res/images/cards/temp/written_card.png')
         return '../res/images/grid.png'
 
     """
