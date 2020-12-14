@@ -9,7 +9,7 @@ from game import colorgame
 
 class ImageGenerator:
     """
-    A class to create an image from a list of Word objects
+    A class to generate an image from a list of Word objects
     """
 
     def __init__(self):
@@ -20,8 +20,10 @@ class ImageGenerator:
 
     def generate(self, words, master):
         """
+        This function generate the path containing the grid with the cards
 
         :param words: list of Word objects
+        :param master: boolean to generate the image according to the role
         :return: image path
         """
         self.master = master
@@ -50,10 +52,14 @@ class ImageGenerator:
         os.remove('../res/images/cards/temp/written_card.png')
         return '../res/images/grid.png'
 
-    """
-    This function creates the background of the image
-    """
     def create_bg(self, img_path, words):
+        """
+        This function creates the background of the image
+
+        :param img_path: path of the image to set the dimensions
+        :param words: list of Word objects
+        :return: background image
+        """
         with Image.open(img_path) as img:
             img_w, img_h = img.size
 
@@ -70,17 +76,13 @@ class ImageGenerator:
         background = Image.new('RGBA', (bg_width, bg_height), (255, 255, 255, 255))
         return background
 
-    """
-    This function add a card to the background
-    """
     def write_on_card(self, card_path, word):
         """
+        This function writes the word on the card
 
-        :param background: the background on which to add the card
-        :param card_path: the path of the card to add
-        :param word: the word to add
-        :param pos: the position of the word in the list
-        :return: the background with the new card
+        :param card_path: the card path to write on
+        :param word: the word to write
+        :return: the path of the written card
         """
         with Image.open(card_path) as img:
             draw = ImageDraw.Draw(img)
@@ -114,6 +116,14 @@ class ImageGenerator:
         return '../res/images/cards/temp/written_card.png'
 
     def add_card(self, background, card_path, pos):
+        """
+        This function add the word to the background
+
+        :param background: image on which to add the card
+        :param card_path: the card path to add to the background
+        :param pos: the position of the word in the background
+        :return: the updated image of the background
+        """
         with Image.open(card_path) as img:
             img_w, img_h = img.size
             # top-left corner coordinates of the card in the background
