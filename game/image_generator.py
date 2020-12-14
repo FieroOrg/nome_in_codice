@@ -12,19 +12,20 @@ class ImageGenerator:
     A class to create an image from a list of Word objects
     """
 
-    def __init__(self, master):
+    def __init__(self):
         self.col_num = 5
         self.space_btw_cards = 30
         self.font = ImageFont.truetype("arial.ttf", 25)
-        self.master = master
+        self.master = None
 
-    def image_spy(self, words):
+    def image_spy(self, words, master):
         """
 
         :param words: list of Word objects
         :param master: boolean for distinguish spies from masters
         :return: image path
         """
+        self.master = master
         background = self.create_bg('../res/images/cards/white_card.png', words)
         for word in words:
             pos = words.index(word)
@@ -132,7 +133,7 @@ i = 10
 while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
-img_gen = ImageGenerator(True)
-img_gen.image_spy(words_table.words)
+img_gen = ImageGenerator()
+img_gen.image_spy(words_table.words, True)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
