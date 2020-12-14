@@ -88,16 +88,28 @@ class WordTable:
         self.white_words = [x for x in self.words_str if x not in red_set and x not in blue_set and
                             x not in self.assassin_words]
 
-
-        self.red_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/red_revealed/*.png")],
+        try:
+            self.red_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/red_revealed/*.png")],
                                                self.number_red)
-        self.blue_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/blue_revealed/*.png")],
+        except ValueError:
+            self.red_revealed_path = glob.glob(self.images_res_path + "/red_revealed/*.png")
+        try:
+            self.blue_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/blue_revealed/*.png")],
                                                 self.number_blue)
-        self.assassin_revealed_path = random.sample([f for f in
+        except ValueError:
+            self.blue_revealed_path = glob.glob(self.images_res_path + "/blue_revealed/*.png")
+        try:
+            self.assassin_revealed_path = random.sample([f for f in
                                                      glob.glob(self.images_res_path + "/black_revealed/*.png")],
                                                     self.number_assassin)
-        self.white_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/white_revealed/*.png")],
-                                               self.number_red)
+        except ValueError:
+            self.assassin_revealed_path = glob.glob(self.images_res_path + "/assassin_revealed/*.png")
+        try:
+            self.white_revealed_path = random.sample([f for f in glob.glob(self.images_res_path + "/white_revealed/*.png")],
+                                               self.number_white)
+        except ValueError:
+            self.white_revealed_path = glob.glob(self.images_res_path + "/white_revealed/*.png")
+
         self.revealed_counter = {'red': 0, 'blue': 0, 'white': 0, 'assassin': 0}
 
         self.create_grid()
