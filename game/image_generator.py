@@ -13,7 +13,7 @@ class ImageGenerator:
     def __init__(self):
         self.col_num = 5
         self.space_btw_cards = 30
-        self.font = ImageFont.truetype("arial.ttf", 25)
+        self.font = ImageFont.truetype("DejaVuSans.ttf", 25)
         self.master = None
 
     def generate(self, words, master):
