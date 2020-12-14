@@ -32,7 +32,7 @@ class ImageGenerator:
             pos = words.index(word)
             if word.revealed:
                 # substitute the path with the correct word property
-                background = self.add_card(background, '../res/images/cards/dead.png', pos)
+                background = self.add_card(background, '../res/images/black_revealed/dead.png', pos)
             else:
                 if self.master:
                     # choose the color of the card
@@ -132,17 +132,3 @@ class ImageGenerator:
             offset = (card_x, card_y)
             background.paste(img, offset)
         return background
-
-
-words_table = WordTable()
-words_table.generate_words("tag")
-print(words_table.print_status())
-# rivelo 10 parole a caso
-i = 10
-while i > 0:
-    words_table.words[random.randint(0, 24)].reveal()
-    i -= 1
-img_gen = ImageGenerator()
-img_gen.generate(words_table.words, False)
-# if you need to do comparisons use colorgame.py (create method is_blue etc?)
-# before creating a new method check it doesn't exist in word.py
