@@ -2,11 +2,8 @@ from game.colorgame import ColorGame
 from game.database import Database
 import random
 import glob
-<<<<<<< HEAD
 from util.exception import NotAllowedCommand
 from util.strings import get_string_bot as _
-=======
->>>>>>> 915ae5e... add generation of images for the revealed cards
 
 
 class Word:
