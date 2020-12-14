@@ -29,21 +29,21 @@ class ImageGenerator:
             pos = words.index(word)
             if word.revealed:
                 # substitute the path with the correct word property
-                background = self.add_card(background, '../res/images/cards/black_card.png', pos)
-            elif self.master:
-                # choose the color of the card
-                if word.color == colorgame.ColorGame.RED:
-                    card_path = '../res/images/cards/red_card.png'
-                elif word.color == colorgame.ColorGame.BLUE:
-                    card_path = '../res/images/cards/blue_card.png'
-                elif word.color == colorgame.ColorGame.WHITE:
-                    card_path = '../res/images/cards/white_card.png'
-                else:
-                    card_path = '../res/images/cards/black_card.png'
-                written_card_path = self.write_on_card(card_path, word)
-                background = self.add_card(background, written_card_path, pos)
+                background = self.add_card(background, '../res/images/cards/dead.png', pos)
             else:
-                written_card_path = self.write_on_card('../res/images/cards/white_card.png', word)
+                if self.master:
+                    # choose the color of the card
+                    if word.color == colorgame.ColorGame.RED:
+                        card_path = '../res/images/cards/red_card.png'
+                    elif word.color == colorgame.ColorGame.BLUE:
+                        card_path = '../res/images/cards/blue_card.png'
+                    elif word.color == colorgame.ColorGame.WHITE:
+                        card_path = '../res/images/cards/white_card.png'
+                    else:
+                        card_path = '../res/images/cards/black_card.png'
+                else:
+                    card_path = '../res/images/cards/white_card.png'
+                written_card_path = self.write_on_card(card_path, word)
                 background = self.add_card(background, written_card_path, pos)
         background.save('../res/images/grid.png')
         # empty temp dir
@@ -131,7 +131,7 @@ i = 10
 while i > 0:
     words_table.words[random.randint(0, 24)].reveal()
     i -= 1
-img_gen = ImageGenerator(False)
+img_gen = ImageGenerator(True)
 img_gen.image_spy(words_table.words)
 # if you need to do comparisons use colorgame.py (create method is_blue etc?)
 # before creating a new method check it doesn't exist in word.py
