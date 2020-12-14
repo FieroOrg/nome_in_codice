@@ -25,30 +25,29 @@ class ImageGenerator:
         :return: image path
         """
         self.master = master
-        background = self.create_bg('../res/images/cards/white_card.png', words)
+        background = self.create_bg('res/images/cards/white_card.png', words)
         for word in words:
             pos = words.index(word)
             if word.revealed:
-                # substitute the path with the correct word property
-                background = self.add_card(background, '../res/images/black_revealed/dead.png', pos)
+                background = self.add_card(background, word.image_path, pos)
             else:
                 if self.master:
                     # choose the color of the card
                     if word.color == colorgame.ColorGame.RED:
-                        card_path = '../res/images/cards/red_card.png'
+                        card_path = 'res/images/cards/red_card.png'
                     elif word.color == colorgame.ColorGame.BLUE:
-                        card_path = '../res/images/cards/blue_card.png'
+                        card_path = 'res/images/cards/blue_card.png'
                     elif word.color == colorgame.ColorGame.WHITE:
-                        card_path = '../res/images/cards/white_card.png'
+                        card_path = 'res/images/cards/white_card.png'
                     else:
-                        card_path = '../res/images/cards/black_card.png'
+                        card_path = 'res/images/cards/black_card.png'
                 else:
-                    card_path = '../res/images/cards/white_card.png'
+                    card_path = 'res/images/cards/white_card.png'
                 written_card_path = self.write_on_card(card_path, word)
                 background = self.add_card(background, written_card_path, pos)
-        background.save('../res/images/grid.png')
-        os.remove('../res/images/cards/temp/written_card.png')
-        return '../res/images/grid.png'
+        background.save('res/images/grid.png')
+        os.remove('res/images/cards/temp/written_card.png')
+        return 'res/images/grid.png'
 
     def create_bg(self, img_path, words):
         """
@@ -110,8 +109,8 @@ class ImageGenerator:
             else:
                 font_color = "black"
             draw.text((word_x_pos, word_y_pos), word.name, fill=font_color, font=self.font)
-            img.save('../res/images/cards/temp/written_card.png')
-        return '../res/images/cards/temp/written_card.png'
+            img.save('res/images/cards/temp/written_card.png')
+        return 'res/images/cards/temp/written_card.png'
 
     def add_card(self, background, card_path, pos):
         """
