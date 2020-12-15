@@ -44,6 +44,14 @@ class Match:
         self.current_turn = None
         self.next_turn = None
 
+    def point(self):
+        s = _('word_point')+'\n'
+        s += '{}: {}\\{} \n{}: {}\\{}'.format(
+            _('team', team = self.team_red.name), self.grid_table.get_red_point(), self.grid_table.number_red,
+            _('team', team=self.team_blue.name), self.grid_table.get_blue_point(), self.grid_table.number_blue
+        )
+        return s
+
     def verify_victory_condition(self):
         if self.grid_table.get_red_point() == self.grid_table.number_red:
             return self.team_red

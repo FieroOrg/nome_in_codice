@@ -35,3 +35,4 @@ en:
   words_added: 'Words added'
   stop_word: 'Stop insering words'
   turn: 'It is the turn of the %{team} team'
+  word_point: 'Word guessed'
