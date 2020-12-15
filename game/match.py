@@ -161,7 +161,7 @@ class Match:
 
     def show(self, member, word):
         if self.status == Status.PLAY:
-            if self.current_turn.master.id == member.id:
+            if member.id in self.current_turn.members.keys():
                 found, color = self.grid_table.show(word)
                 if not found:
                     raise NotAllowedCommand(_('error_word_not_found', word=word))
