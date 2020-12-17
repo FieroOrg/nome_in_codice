@@ -44,6 +44,14 @@ class Match:
         self.current_turn = None
         self.next_turn = None
 
+    def point(self):
+        s = _('word_point')+'\n'
+        s += '{}: {}\\{} \n{}: {}\\{}'.format(
+            _('team', team = self.team_red.name), self.grid_table.get_red_point(), self.grid_table.number_red,
+            _('team', team=self.team_blue.name), self.grid_table.get_blue_point(), self.grid_table.number_blue
+        )
+        return s
+
     def verify_victory_condition(self):
         if self.grid_table.get_red_point() == self.grid_table.number_red:
             return self.team_red
@@ -153,7 +161,7 @@ class Match:
 
     def show(self, member, word):
         if self.status == Status.PLAY:
-            if self.current_turn.master.id == member.id:
+            if member.id in self.current_turn.members.keys():
                 found, color = self.grid_table.show(word)
                 if not found:
                     raise NotAllowedCommand(_('error_word_not_found', word=word))

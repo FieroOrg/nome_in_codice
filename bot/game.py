@@ -40,7 +40,7 @@ class Game(commands.Cog):
         words = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].grid_table.words
         next_team = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].current_turn.name
         spies_image = [discord.File(ImageGenerator().generate(words, False))]
-        await ctx.send(_('turn', team=next_team),files=spies_image)
+        await ctx.send(_('turn' , team=next_team) + '\n' + self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].point(),files=spies_image)
         master_red = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_red.master
         master_blue = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_blue.master
         if master_red is not None:
@@ -83,6 +83,10 @@ class Game(commands.Cog):
         try:
             member = member or ctx.author
             self.pass_turn(ctx.message.author.guild, ctx.message.channel, member)
+            next_team = self.game_helper.matches[
+                (ctx.message.author.guild.id, ctx.message.channel.id)].current_turn.name
+            await ctx.send(_('turn', team=next_team) + '\n' + self.game_helper.matches[
+                (ctx.message.author.guild.id, ctx.message.channel.id)].point())
         except NotAllowedCommand as err:
             await ctx.send(err.message)
 
