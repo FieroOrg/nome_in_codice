@@ -1,10 +1,8 @@
 FROM python:3
 
-COPY bot/ ./bot/
-COPY game/ ./game/
-COPY res/ ./res/ 
-COPY util/ ./util/
-COPY main.py requirements.txt ./
-RUN pip install -r requirements.txt
+COPY src/ /app/src
+COPY requirements.txt /app/
+RUN pip install -r /app/requirements.txt
 
+WORKDIR /app/src
 CMD [ "python", "./main.py" ]
