@@ -1,10 +1,9 @@
-FROM python:3
+FROM python:3-slim
 
-COPY bot/ ./bot/
-COPY game/ ./game/
-COPY res/ ./res/ 
-COPY util/ ./util/
-COPY main.py requirements.txt ./
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get -y install gcc
+COPY src/ /app/src
+COPY requirements.txt /app/
+RUN pip install -r /app/requirements.txt
 
+WORKDIR /app/src
 CMD [ "python", "./main.py" ]
